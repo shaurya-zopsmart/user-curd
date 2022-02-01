@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	models "github.com/shaurya-zopsmart/crudcc/models"
+	models "github.com/shaurya-zopsmart/user-curd/crudcc/models"
 )
 
 // MockStore is a mock of Store interface.

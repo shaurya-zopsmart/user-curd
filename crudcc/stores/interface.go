@@ -1,6 +1,6 @@
 package stores
 
-import "github.com/shaurya-zopsmart/crudcc/models"
+import "github.com/shaurya-zopsmart/user-curd/crudcc/models"
 
 type Store interface {
 	InsertUser(usr models.User) (models.User, error)

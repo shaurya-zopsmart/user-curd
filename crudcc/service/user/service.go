@@ -4,8 +4,8 @@ import (
 	"errors"
 	"log"
 
-	"github.com/shaurya-zopsmart/crudcc/models"
-	"github.com/shaurya-zopsmart/crudcc/stores"
+	"github.com/shaurya-zopsmart/user-curd/crudcc/models"
+	"github.com/shaurya-zopsmart/user-curd/crudcc/stores"
 )
 
 type UsrDtl struct {
