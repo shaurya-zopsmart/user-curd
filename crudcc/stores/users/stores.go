@@ -23,11 +23,17 @@ func (u *DataStore) CreateUser(usr models.User) (models.User, error) {
 	if err != nil {
 		return usr, errors.New("fail to execute the query")
 	}
-	_, err = res.LastInsertId()
+	lid_64, err := res.LastInsertId()
 	if err != nil {
 		return usr, errors.New("fail to fetch the last inserted id")
 	}
-	return usr, nil
+	lid := int(lid_64)
+	resp, err := u.GetUserById(lid)
+
+	if err != nil {
+		return usr, errors.New("fail to fetch the last inserted id")
+	}
+	return resp, nil
 }
 
 func (u *DataStore) GetAllUsers() ([]*models.User, error) {
