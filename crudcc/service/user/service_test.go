@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/shaurya-zopsmart/crudcc/models"
-	"github.com/shaurya-zopsmart/crudcc/stores"
+	"github.com/shaurya-zopsmart/user-curd/crudcc/models"
+	"github.com/shaurya-zopsmart/user-curd/crudcc/stores"
 )
 
 func Test_GetUserById(t *testing.T) {
@@ -202,18 +202,18 @@ func Test_InsertUser(t *testing.T) {
 			desc:     "case 1",
 			expout:   models.User{Id: 1, Name: "vv", Email: "vv@gmail.com", Phone: "9988776655", Age: 23},
 			experr:   nil,
-			mockcall: mockstore.EXPECT().InsertUser(testUser).Return(models.User{Id: 1, Name: "vv", Email: "vv@gmail.com", Phone: "9988776655", Age: 23}, nil),
+			mockcall: mockstore.EXPECT().CreateUser(testUser).Return(models.User{Id: 1, Name: "vv", Email: "vv@gmail.com", Phone: "9988776655", Age: 23}, nil),
 		},
 		{
 			desc:     "case 2",
 			expout:   models.User{},
 			experr:   errors.New("fail to execute"),
-			mockcall: mockstore.EXPECT().InsertUser(models.User{}).Return(models.User{}, errors.New("fail to execute")),
+			mockcall: mockstore.EXPECT().CreateUser(models.User{}).Return(models.User{}, errors.New("fail to execute")),
 		},
 	}
 	for _, tcs := range testcase {
 		t.Run(tcs.desc, func(t *testing.T) {
-			res, err := testservice.InsertUsr(tcs.expout)
+			res, err := testservice.CreateUsr(tcs.expout)
 			if !reflect.DeepEqual(tcs.expout, res) {
 				t.Errorf("Expected %v but got %v", tcs.expout, res)
 			}

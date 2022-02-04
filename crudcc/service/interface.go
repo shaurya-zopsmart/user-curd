@@ -1,12 +1,11 @@
 package service
 
-import "github.com/shaurya-zopsmart/crudcc/models"
+import "github.com/shaurya-zopsmart/user-curd/crudcc/models"
 
 type User interface {
-	InsertUsr(user models.User) (models.User, error)
+	Create(user models.User) (models.User, error)
 	GetAllUsrs() ([]*models.User, error)
 	GetUsrById(Id int) (models.User, error)
 	UpdateUsr(id int, user models.User) error
 	DeleteUsrById(Id int) error
-	// GetEmail(Email string) (bool, error)
 }

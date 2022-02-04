@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/shaurya-zopsmart/crudcc/models"
+	"github.com/shaurya-zopsmart/user-curd/crudcc/models"
 )
 
 func Newmock() (*sql.DB, sqlmock.Sqlmock) {
@@ -45,7 +45,7 @@ func Test_GetUserById(t *testing.T) {
 			experr: nil,
 			expout: &models.User{Id: 5, Name: "Shaurya", Email: "berbreik@gmail.com", Phone: "9131346359", Age: 34},
 			mock: []interface{}{
-				mock.ExpectQuery("SELECT Id,Name,Email,Phone,Age FROM user WHERE Id=?").WithArgs(2).WillReturnRows(sqlmock.NewRows([]string{"Id", "Name", "Email", "Phone", "Age"}).AddRow(2, "Shaurya", "berbreik@gmail.com", "9131346359", 34)),
+				mock.ExpectQuery("SELECT Id,Name,Email,Phone,Age FROM user WHERE Id=?").WithArgs(2).WillReturnRows(sqlmock.NewRows([]string{"Id", "Name", "Email", "Phone", "Age"}).AddRow(5, "Shaurya", "berbreik@gmail.com", "9131346359", 34)),
 			},
 		},
 		{
@@ -112,7 +112,7 @@ func Test_InsertUser(t *testing.T) {
 		},
 	}
 	for _, tcs := range testcase {
-		resp, err := N.InsertUser(tcs.value)
+		resp, err := N.CreateUser(tcs.value)
 		if !reflect.DeepEqual(resp, tcs.expout) {
 			t.Errorf("Expected %v and got %v\n", tcs.expout, resp)
 		}

@@ -18,7 +18,7 @@ func New(usrstr stores.Store) *UsrDtl {
 	}
 }
 
-func (usr *UsrDtl) GetAllUsrs() ([]*models.User, error) {
+func (usr UsrDtl) GetAllUsrs() ([]*models.User, error) {
 
 	res, err := usr.u.GetAllUsers()
 	if err != nil {
@@ -28,7 +28,7 @@ func (usr *UsrDtl) GetAllUsrs() ([]*models.User, error) {
 
 }
 
-func (usr *UsrDtl) GetUsrById(id int) (models.User, error) {
+func (usr UsrDtl) GetUsrById(id int) (models.User, error) {
 
 	if validateid(id) {
 		log.Println("invalid id")
@@ -41,7 +41,7 @@ func (usr *UsrDtl) GetUsrById(id int) (models.User, error) {
 
 }
 
-func (usr *UsrDtl) InsertUsr(user models.User) (models.User, error) {
+func (usr UsrDtl) Create(user models.User) (models.User, error) {
 	if !validateid(user.Id) {
 		return user, errors.New("error invalid id")
 	}
@@ -52,7 +52,7 @@ func (usr *UsrDtl) InsertUsr(user models.User) (models.User, error) {
 	if !validp(user.Phone) {
 		return user, errors.New("invalid phone")
 	}
-	seruser, err := usr.u.InsertUser(user)
+	seruser, err := usr.u.Create(user)
 	if err != nil {
 		return seruser, errors.New("fail to execute")
 	}
@@ -68,7 +68,7 @@ func (usr UsrDtl) DeleteUsrById(id int) error {
 
 }
 
-func (usr *UsrDtl) UpdateUsr(id int, user models.User) error {
+func (usr UsrDtl) UpdateUsr(id int, user models.User) error {
 
 	if !validateid(id) {
 		return errors.New("errrors invalid id")

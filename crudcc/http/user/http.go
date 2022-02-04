@@ -7,16 +7,18 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/shaurya-zopsmart/crudcc/models"
-	"github.com/shaurya-zopsmart/crudcc/service"
+	"github.com/shaurya-zopsmart/user-curd/crudcc/models"
+	"github.com/shaurya-zopsmart/user-curd/crudcc/service"
 )
 
 type Handler struct {
 	handler service.User
 }
 
-func New(s service.User) Handler {
-	return Handler{s}
+func New(s service.User) *Handler {
+	return &Handler{
+		handler: s,
+	}
 }
 
 func (h Handler) UserwithID(w http.ResponseWriter, r *http.Request) {
@@ -59,7 +61,7 @@ func (us Handler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := json.MarshalIndent(userdata, "", "")
+	res, err := json.Marshal(userdata)
 	if err == nil {
 		w.Write([]byte(res))
 		w.WriteHeader(http.StatusOK)
@@ -67,7 +69,7 @@ func (us Handler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (us Handler) AddUser(w http.ResponseWriter, r *http.Request) {
+func (us Handler) Create(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var ur models.User
 	body := r.Body
@@ -79,7 +81,7 @@ func (us Handler) AddUser(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("invalid body"))
 	}
 
-	res, newerr := us.handler.InsertUsr(ur)
+	res, newerr := us.handler.Create(ur)
 	if newerr != nil {
 		fmt.Println(newerr)
 		w.WriteHeader(http.StatusBadRequest)
@@ -95,14 +97,14 @@ func (us Handler) AddUser(w http.ResponseWriter, r *http.Request) {
 
 func (us Handler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	var ur *models.User
+	var ur models.User
 	body := r.Body
 	json.NewDecoder(body).Decode(&ur)
 	params := mux.Vars(r)
 	v := params["id"]
 	id, _ := strconv.Atoi(v)
 
-	err := us.handler.UpdateUsr(id, *ur)
+	err := us.handler.UpdateUsr(id, ur)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("cannot update due to some validation error"))

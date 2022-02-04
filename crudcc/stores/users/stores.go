@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/shaurya-zopsmart/crudcc/models"
+	"github.com/shaurya-zopsmart/user-curd/crudcc/models"
 )
 
 type DataStore struct {
@@ -15,7 +15,7 @@ type DataStore struct {
 func New(db *sql.DB) DataStore {
 	return DataStore{db}
 }
-func (u *DataStore) InsertUser(usr models.User) (models.User, error) {
+func (u *DataStore) CreateUser(usr models.User) (models.User, error) {
 
 	Query := "INSERT INTO user (Id,Name,Email,Phone,Age) Values(?,?,?,?,?)"
 	res, err := u.db.Exec(Query, usr.Id, usr.Name, usr.Email, usr.Phone, usr.Age)
@@ -43,35 +43,86 @@ func (u *DataStore) GetAllUsers() ([]*models.User, error) {
 
 		users = append(users, &usr)
 	}
-	// if err := row.Err(); err != nil {
-	// 	return users, errors.New("fail to append fucntion or scan")
-	// }
+
 	return users, nil
 
 }
 
-func (u *DataStore) GetUserById(Id int) (*models.User, error) {
+func (u *DataStore) GetUserById(Id int) (models.User, error) {
 	var solo models.User
 
 	row := u.db.QueryRow("SELECT Id,Name,Email,Phone,Age FROM user WHERE Id=?", Id)
 	err := row.Scan(&solo.Id, &solo.Name, &solo.Email, &solo.Phone, &solo.Age)
 	if err != nil {
-		return &solo, errors.New("error no row")
+		return solo, errors.New("error no row")
 	}
-	return &solo, nil
+	return solo, nil
 }
 
-func (u *DataStore) UpdateUser(Id int, usr models.User) (models.User, error) {
+func (u *DataStore) UpdateUser(id int, value models.User) (models.User, error) {
 
-	// if id < 1 {
-	// 	return usr, fmt.Errorf("not a valid id less than 1")
-	// }
-	_, err := u.db.Exec("UPDATE user SET name=? , email=?, phone = ? , age = ? WHERE id = ?", usr.Name, usr.Email, usr.Phone, usr.Age, Id)
-	if err != nil {
-		return usr, fmt.Errorf("fail to execute the query%s", err)
+	query := "Update User Set "
+	var arg []interface{}
+
+	if value.Name != "" {
+
+		query = query + "Name = ?,"
+		arg = append(arg, value.Name)
 	}
 
-	return usr, nil
+	if value.Email != "" {
+
+		query = query + "Email = ?,"
+		arg = append(arg, value.Email)
+
+	}
+
+	if value.Phone != "" {
+
+		query = query + "Phone = ?,"
+		arg = append(arg, value.Phone)
+
+	}
+
+	if value.Age != 0 {
+
+		query = query + "Age = ?,"
+		arg = append(arg, value.Age)
+
+	}
+	query = query[:len(query)-1]
+	query = query + " where Id = ?"
+	arg = append(arg, id)
+
+	fmt.Println(query, arg)
+	_, err := u.db.Exec(query, arg...)
+
+	if err != nil {
+		return models.User{
+			Id:    id,
+			Name:  "",
+			Phone: "",
+			Email: "",
+			Age:   0,
+		}, errors.New("error in the given query")
+	}
+
+	user := models.User{}
+
+	user, err = u.GetUserById(id)
+
+	if err != nil {
+
+		return models.User{
+			Id:    id,
+			Name:  "",
+			Phone: "",
+			Email: "",
+			Age:   0,
+		}, errors.New("error in the given query")
+	}
+
+	return user, nil
 
 }
 

@@ -10,8 +10,8 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"
-	"github.com/shaurya-zopsmart/crudcc/models"
-	"github.com/shaurya-zopsmart/crudcc/service"
+	"github.com/shaurya-zopsmart/user-curd/crudcc/models"
+	"github.com/shaurya-zopsmart/user-curd/crudcc/service"
 )
 
 func Test_GetUserById(t *testing.T) {
